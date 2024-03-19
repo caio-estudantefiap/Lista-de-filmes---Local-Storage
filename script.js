@@ -129,43 +129,21 @@ const favoritoClicado = (eventoDeClique) => {
 }
 
 /*
-Função que é executada quando o botão de favorito é clicado
+Função executada para remover o filme no localStorage
 */
 
-const favoritoClicado = (eventoDeClique, objetoFilme) => {
-    /*adiciona um objeto com a propriedade favorito e não favorito,
-    e seus valores são os caminhos da imagem*/
-    const favoriteState = {
-        favorited: 'img/heart-fill.svg',
-        notFavorited: 'img/heart.svg'
-      }
-      //valida se o src da imagem que foi clicada inclui o caminho da imagem de não favoritado
-      if(eventoDeClique.target.src.includes(favoriteState.notFavorited)) {
-        // se não incluir, mudar a imagem para favoritado e executar a função de salvar no localStorage
-        eventoDeClique.target.src = favoriteState.favorited
-        saveToLocalStorage(objetoFilme)
-      } else {
-        /* senão, manter a imagem de não favoritado e executar a função de remover
-        do localStorage, passando como parâmetro o id do filme*/
-        eventoDeClique.target.src = favoriteState.notFavorited
-      }
-
-}
-
-/*
-Função executada para salvar o filme no localStorage
-*/
-
-const saveToLocalStorage = (objetoFilme) => {
-    //checa se já existe um campo de favoritos no LocalStorage
+function removeFromLocalStorage(id) {
+     //checa se já existe um campo de favoritos no LocalStorage
     //se houver, ele salva no array filmesFavoritos
     if(localStorage.getItem('favoritos')){
         filmesFavoritos = JSON.parse(localStorage.getItem('favoritos'));
     }
-    //adiciona o nome do Filme ao array filmesFavoritos
-    filmesFavoritos.push(objetoFilme)
+    //procura no array o id do filme
+    const procurarFilme = filmesFavoritos.find(movie => movie.id === id)
+    //filtra todos os filmes que tem o id diferente do que foi encontrado e gera um novo array
+    const filmesFiltrados = filmesFavoritos.filter(movie => movie.id != procurarFilme.id)
     //transforma o array em string para poder salvar no LocalStorage
-    const moviesJSON = JSON.stringify(filmesFavoritos)
-    //Salva no localStorage
-    localStorage.setItem('favoritos', moviesJSON)
-}
+    const filmesFiltradosJSON = JSON.stringify(filmesFiltrados)
+    //guarda esse novo array no localStorage
+    localStorage.setItem('favoritos', filmesFiltradosJSON)
+  }
